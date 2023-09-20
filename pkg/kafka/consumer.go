@@ -12,7 +12,9 @@ import (
 
 type consumers struct {
 	consumers []*consumer
-	mwFuncs   []MiddlewareFunc
+
+	done chan struct{}
+	wg   *sync.WaitGroup
 }
 
 type consumer struct {
@@ -20,17 +22,13 @@ type consumer struct {
 	checkError bool
 	handler    Handler
 	*kafka.Consumer
-
-	gCtx   context.Context
-	cancel context.CancelFunc
-
-	wg *sync.WaitGroup
 }
 
 func newConsumers(size int) consumers {
 	return consumers{
 		consumers: make([]*consumer, 0, size),
-		mwFuncs:   make([]MiddlewareFunc, 0),
+		done:      make(chan struct{}),
+		wg:        new(sync.WaitGroup),
 	}
 }
 
@@ -40,11 +38,7 @@ func newConsumer(
 	handler Handler,
 	kafkaConsumer *kafka.Consumer,
 ) *consumer {
-	gCtx, cancel := context.WithCancel(context.Background())
 	return &consumer{
-		gCtx:       gCtx,
-		cancel:     cancel,
-		wg:         new(sync.WaitGroup),
 		topic:      topic,
 		checkError: checkError,
 		handler:    handler,
@@ -53,12 +47,12 @@ func newConsumer(
 }
 
 func newConsumersBySubscriptions(config kafka.ConfigMap, subscriptions subscriptions, serviceName string) (consumers consumers, err error) {
-	consumers = newConsumers(len(subscriptions))
+	consumers = newConsumers(len(subscriptions.subscriptions))
 	config["group.id"] = serviceName
 
-	for i := 0; i < len(subscriptions); i++ {
-		for j := 0; j < subscriptions[i].goroutines; j++ {
-			newConsumer, err := newConsumerBySubscription(config, subscriptions[i])
+	for i := 0; i < len(subscriptions.subscriptions); i++ {
+		for j := 0; j < subscriptions.subscriptions[i].goroutines; j++ {
+			newConsumer, err := newConsumerBySubscription(config, subscriptions.subscriptions[i])
 			if err != nil {
 				return consumers, err
 			}
@@ -83,23 +77,21 @@ func newConsumerBySubscription(config kafka.ConfigMap, subscription subscription
 	return newConsumer(subscription.topic, subscription.checkError, subscription.handler, kafkaConsumer), nil
 }
 
-func (c *consumer) startConsume(consumer consumer) error {
-	c.wg.Add(1)
-	defer c.wg.Done()
+func (c *consumer) startConsume(done <-chan struct{}, mwFuncs []MiddlewareFunc) error {
 	log := logger.GetLogger()
 	// Прогоняем хендлер через миддлверы
 	var handler MessageHandler = func(ctx context.Context, message pkg.Message) error {
-		return consumer.handler(ctx, message.Body)
+		return c.handler(ctx, message.Body)
 	}
-	for j := len(c.mwFuncs) - 1; j >= 0; j-- {
-		handler = c.mwFuncs[j](handler)
+	for j := len(mwFuncs) - 1; j >= 0; j-- {
+		handler = mwFuncs[j](handler)
 	}
 	for {
 		select {
-		case <-c.gCtx.Done():
+		case <-done:
 			return nil
 		default:
-			msg, err := consumer.ReadMessage(readTimeout)
+			msg, err := c.ReadMessage(readTimeout)
 			if err != nil {
 				if kafkaErr, ok := err.(kafka.Error); ok {
 					// Если retriable (но со стороны консумера вроде бы такого нет), то пробуем снова
@@ -110,9 +102,9 @@ func (c *consumer) startConsume(consumer consumer) error {
 				return errors.Wrap(err, "cant read kafka message")
 			}
 			err = handler(context.Background(), pkg.NewByKafkaMessage(msg))
-			if err != nil && consumer.checkError {
+			if err != nil && c.checkError {
 				log.WithError(err).Debug("try to read message again")
-				consumer.rollbackConsumerTransaction(msg.TopicPartition)
+				c.rollbackConsumerTransaction(msg.TopicPartition)
 			}
 		}
 	}
@@ -120,8 +112,9 @@ func (c *consumer) startConsume(consumer consumer) error {
 
 func (c *consumers) stopConsumers() {
 	log := logger.GetLogger()
-	c.cancel()
+	close(c.done)
 	c.wg.Wait()
+
 	for i := range c.consumers {
 		_, err := c.consumers[i].Commit()
 		if err != nil {

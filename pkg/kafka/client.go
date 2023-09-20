@@ -35,7 +35,7 @@ type (
 type client struct {
 	serviceName    string
 	topicPrefix    string
-	consumers      *consumers
+	consumers      consumers
 	subscriptions  subscriptions
 	producer       producer
 	producerConfig kafka.ConfigMap
@@ -48,7 +48,7 @@ func NewBrokerClient(
 	serviceName string,
 ) BrokerClient {
 	return &client{
-		subscriptions:  make([]subscription, 0),
+		subscriptions:  newSubscriptions(),
 		serviceName:    serviceName,
 		producerConfig: producerConfig,
 		consumerConfig: consumerConfig,
@@ -69,7 +69,7 @@ func (c *client) Start() (err error) {
 	if err != nil {
 		return
 	}
-	if len(c.subscriptions) != 0 {
+	if len(c.subscriptions.subscriptions) != 0 {
 		err = c.subscriptions.createTopics(c.producer)
 		if err != nil {
 			return
@@ -84,7 +84,7 @@ func (c *client) Start() (err error) {
 
 func (c *client) Pre(mw ...interface{}) {
 	for _, v := range mw {
-		c.consumers.mwFuncs = append(c.consumers.mwFuncs, v.(MiddlewareFunc))
+		c.subscriptions.mwFuncs = append(c.subscriptions.mwFuncs, v.(MiddlewareFunc))
 	}
 }
 
@@ -110,7 +110,7 @@ func (c *client) Subscribe(topic string, h Handler, goroutines int, spec *TopicS
 	if len(checkError) != 0 {
 		s.checkError = checkError[0]
 	}
-	c.subscriptions = append(c.subscriptions, s)
+	c.subscriptions.subscriptions = append(c.subscriptions.subscriptions, s)
 }
 
 func (c *client) publish(ctx context.Context, message pkg.Message) (err error) {
@@ -169,7 +169,7 @@ func (c *client) reconnect() {
 	c.StopSubscribe()
 	log.Debugf("consumers stopped")
 	// Чистим массив остановленных консумеров
-	c.consumers.consumers = make([]consumer, 0)
+	c.consumers.consumers = make([]*consumer, 0)
 
 	// Ждём 10 секунд для реконнекта
 	time.Sleep(reconnectTime)
