@@ -8,7 +8,17 @@ import (
 	"sync"
 )
 
-type subscriptions []subscription
+type subscriptions struct {
+	mwFuncs       []MiddlewareFunc
+	subscriptions []subscription
+}
+
+func newSubscriptions() subscriptions {
+	return subscriptions{
+		mwFuncs:       make([]MiddlewareFunc, 0),
+		subscriptions: make([]subscription, 0),
+	}
+}
 
 type subscription struct {
 	topic      string
@@ -18,24 +28,25 @@ type subscription struct {
 	handler    Handler
 }
 
-func (s *subscriptions) initConsumers(config kafka.ConfigMap, serviceName string, reconnectFunc func()) (consumers *consumers, err error) {
-	// Запускаем каждого консумера в отдельной горутине
+func (s *subscriptions) initConsumers(config kafka.ConfigMap, serviceName string, reconnectFunc func()) (consumers consumers, err error) {
 	once := &sync.Once{}
-	log := logger.GetLogger()
 	consumers, err = newConsumersBySubscriptions(config, *s, serviceName)
 	if err != nil {
 		return consumers, err
 	}
+
+	// Запускаем каждого консумера в отдельной горутине
 	for _, c := range consumers.consumers {
-		go func(consumer consumer) {
-			err := consumers.startConsume(consumer)
+		consumers.wg.Add(1)
+		go func(consumer *consumer, done <-chan struct{}) {
+			err := consumer.startConsume(done, s.mwFuncs)
+			consumers.wg.Done()
 			if err != nil {
 				once.Do(func() {
 					reconnectFunc()
 				})
 			}
-			log.WithError(err).Error("consuming error")
-		}(c)
+		}(c, consumers.done)
 	}
 
 	logger.GetLogger().Info("KAFKA CONSUMERS IS READY")
@@ -50,8 +61,8 @@ func (s *subscriptions) createTopics(producer producer) (err error) {
 	}
 	defer adminClient.Close()
 	log := logger.GetLogger()
-	specifications := make([]kafka.TopicSpecification, 0, len(*s))
-	for _, subscriber := range *s {
+	specifications := make([]kafka.TopicSpecification, 0, len(s.subscriptions))
+	for _, subscriber := range s.subscriptions {
 		specification := kafka.TopicSpecification{
 			Topic:             subscriber.topic,
 			ReplicationFactor: defaultReplicationFactor,
