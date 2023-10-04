@@ -2,7 +2,6 @@ package logic
 
 import (
 	"broker_transaction_outbox/internal/entity"
-	"broker_transaction_outbox/pkg"
 	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -10,28 +9,39 @@ import (
 )
 
 type publisherLogic struct {
+	serviceName     string
 	storeRepository entity.Store
 }
 
-func NewPublisherLogic(storeRepository entity.Store) entity.Publisher {
+func NewPublisherLogic(storeRepository entity.Store, serviceName string) entity.Publisher {
 	return &publisherLogic{
 		storeRepository: storeRepository,
+		serviceName:     serviceName,
 	}
 }
 
-func (p *publisherLogic) Publish(ctx context.Context, message pkg.Message) error {
+func (p *publisherLogic) validateMessage(message entity.Message) error {
 	if message.Topic == "" {
 		return errors.New("invalid message, topic is empty")
 	}
-	if len(message.Body) == 0 {
+	if message.Body == nil {
 		return errors.New("invalid message, body is empty")
 	}
-	newID := uuid.New()
+	return nil
+}
+
+func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}, headers ...entity.Header) error {
+	message := entity.NewMessage(topic, data, headers)
+	err := p.validateMessage(message)
+	if err != nil {
+		return err
+	}
 	record := entity.Record{
-		Uuid:      newID,
-		Message:   message,
-		State:     entity.PendingDelivery,
-		CreatedOn: time.Now().UTC().Unix(),
+		ServiceName: p.serviceName,
+		Uuid:        uuid.New(),
+		Message:     message,
+		State:       entity.PendingDelivery,
+		CreatedOn:   time.Now().UTC().Unix(),
 	}
 	return p.storeRepository.AddRecord(ctx, record)
 }

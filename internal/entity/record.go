@@ -1,16 +1,16 @@
 package entity
 
 import (
-	"broker_transaction_outbox/pkg"
 	"github.com/google/uuid"
 )
 
 // Record represents the record that is stored and retrieved from the database
 type Record struct {
-	Uuid      uuid.UUID
-	Message   pkg.Message
-	State     RecordState
-	CreatedOn int64
+	ServiceName string
+	Uuid        uuid.UUID
+	Message     Message
+	State       RecordState
+	CreatedOn   int64
 }
 
 type Records []Record
