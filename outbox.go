@@ -8,7 +8,9 @@ import (
 )
 
 func NewOutbox(pgClient entity.Client, tx entity.Transactor, publisher entity.Publisher, serviceName string) (entity.RecordLogic, entity.Publisher) {
-	app.Run(pgClient.GetSqlDB(), serviceName, nil)
+	app.Run(pgClient.GetSqlDB(), serviceName, map[string]string{
+		"c": "up",
+	})
 	var (
 		storeRepository = repository.NewStoreRepository(pgClient)
 	)
