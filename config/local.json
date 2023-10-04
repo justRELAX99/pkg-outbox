@@ -5,29 +5,5 @@
       "user": "postgres",
       "dbName": "testdb",
       "password": "mysecretpassword"
-  },
-  "redis": {
-      "host": "192.168.120.199",
-      "port": "6379",
-      "user": "",
-      "password": "qwerty",
-      "maxPoolSize": 40,
-      "readTimeout": 5,
-      "writeTimeout": 5
-  },
-  "kafkaProducer": {
-    "bootstrap.servers": "localhost:9092",
-    "queue.buffering.max.messages": 5000000,
-    "linger.ms": 5,
-    "acks": "all",
-    "socket.keepalive.enable": true,
-    "go.delivery.reports": true
-  },
-  "kafkaConsumer": {
-    "bootstrap.servers": "localhost:9092",
-    "group.id": "broker_transaction_outbox",
-    "auto.offset.reset": "earliest",
-    "allow.auto.create.topics": true,
-    "socket.keepalive.enable": true
   }
 }

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"broker_transaction_outbox/internal/entity"
-	"broker_transaction_outbox/pkg/postgres"
 	"context"
 	"fmt"
 	"github.com/georgysavva/scany/v2/pgxscan"
@@ -10,10 +9,10 @@ import (
 )
 
 type storeRepository struct {
-	client postgres.Client
+	client entity.Client
 }
 
-func NewStoreRepository(client postgres.Client) entity.Store {
+func NewStoreRepository(client entity.Client) entity.Store {
 	return &storeRepository{
 		client: client,
 	}

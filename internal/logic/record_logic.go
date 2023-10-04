@@ -2,13 +2,10 @@ package logic
 
 import (
 	"broker_transaction_outbox/internal/entity"
-	"broker_transaction_outbox/pkg/kafka"
 	"broker_transaction_outbox/pkg/logger"
-	"broker_transaction_outbox/pkg/postgres"
 	"context"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"sync"
 	"time"
 )
 
@@ -19,48 +16,45 @@ const (
 
 type recordsLogic struct {
 	storeRepository entity.Store
-	transactor      postgres.Transactor
-	broker          kafka.BrokerClient
+	transactor      entity.Transactor
+	broker          entity.Publisher
 
-	done chan struct{}
-	wg   sync.WaitGroup
+	syncGroup *entity.SyncGroup
 }
 
 func NewRecordsLogic(
 	storeRepository entity.Store,
-	transactor postgres.Transactor,
-	broker kafka.BrokerClient,
+	transactor entity.Transactor,
+	broker entity.Publisher,
 ) entity.RecordLogic {
 	r := &recordsLogic{
 		storeRepository: storeRepository,
 		transactor:      transactor,
 		broker:          broker,
-		done:            make(chan struct{}),
-		wg:              sync.WaitGroup{},
+		syncGroup:       entity.NewSyncGroup(),
 	}
 	return r
 }
 
 func (r *recordsLogic) StartProcessRecords(countGoroutines int) {
-	r.wg.Add(countGoroutines)
+	r.syncGroup.Add(countGoroutines)
 	for i := 0; i < countGoroutines; i++ {
 		go r.processRecords()
 	}
 }
 
 func (r *recordsLogic) StopProcessRecords() {
-	close(r.done)
-	r.wg.Wait()
+	r.syncGroup.Close()
 }
 
 func (r *recordsLogic) processRecords() {
-	defer r.wg.Done()
+	defer r.syncGroup.Done()
 	ctx := context.Background()
 	log := logger.GetLogger()
 	for {
 		time.Sleep(defaultProcessRecordsSleepTime)
 		select {
-		case <-r.done:
+		case <-r.syncGroup.IsDone():
 			return
 		default:
 			err := r.processRecordsWork(ctx)
@@ -109,7 +103,7 @@ func (r *recordsLogic) publishRecords(ctx context.Context, records []entity.Reco
 	successfulRecords := make([]entity.Record, 0, len(records))
 	errorRecords := make([]entity.Record, 0, len(records))
 	for _, record := range records {
-		err := r.broker.Publish(ctx, record.Message)
+		err := r.broker.Publish(ctx, record.Message.Topic, record.Message.Body, record.Message.Headers...)
 		if err != nil {
 			errorRecords = append(errorRecords, record)
 		}

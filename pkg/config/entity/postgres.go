@@ -1,14 +1,6 @@
-package postgres
+package entity
 
-const (
-	driverName = "postgres"
-)
-
-type DataBases struct {
-	EnkodPG Config `json:"enkodPG"`
-}
-
-type Config struct {
+type PostgresConfig struct {
 	Host         string `json:"host"`
 	Port         string `json:"port"`
 	User         string `json:"user"`
@@ -17,4 +9,14 @@ type Config struct {
 	MaxOpenConns int    `json:"maxOpenConns"`
 	MaxAttempts  int    `json:"maxAttempts"`
 	MaxDelay     int    `json:"maxDelay"`
+}
+
+func (p PostgresConfig) GetDSN(serviceName string) string {
+	return "host=" + p.Host +
+		" port=" + p.Port +
+		" user=" + p.User +
+		" dbname=" + p.DBName +
+		" sslmode=disable password=" + p.Password +
+		" application_name=" + serviceName
+
 }

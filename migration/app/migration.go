@@ -1,9 +1,9 @@
 package app
 
 import (
-	"broker_transaction_outbox/migration/entity"
 	"broker_transaction_outbox/pkg/environment"
 	"broker_transaction_outbox/pkg/logger"
+	"database/sql"
 	"flag"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/pkg/errors"
@@ -60,21 +60,10 @@ func getMigrationArgs(migrationArgs map[string]string) (dir string, command stri
 	return
 }
 
-func Run(dbSettings entity.DataBaseSettings, serviceName string, migrationArgs map[string]string) {
+func Run(db *sql.DB, serviceName string, migrationArgs map[string]string) {
 	dir, command, args, withLog := getMigrationArgs(migrationArgs)
 	setLogger(withLog)
 
-	dsn := "host=" + dbSettings.Host +
-		" port=" + dbSettings.Port +
-		" user=" + dbSettings.User +
-		" dbname=" + dbSettings.DataBaseName +
-		" sslmode=disable password=" + dbSettings.Password +
-		" application_name=" + serviceName
-
-	db, err := goose.OpenDBWithDriver(dbSettings.DriverName, dsn)
-	if err != nil {
-		panic(errors.Wrap(err, "goose: failed to open DB"))
-	}
 	defer func() {
 		if err := db.Close(); err != nil {
 			panic(errors.Wrap(err, "goose: failed to close DB"))

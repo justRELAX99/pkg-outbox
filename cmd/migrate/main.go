@@ -2,8 +2,8 @@ package main
 
 import (
 	"broker_transaction_outbox/migration/app"
-	"broker_transaction_outbox/migration/entity"
 	"broker_transaction_outbox/pkg/config"
+	"database/sql"
 	log "github.com/sirupsen/logrus"
 	"os"
 )
@@ -18,5 +18,10 @@ func main() {
 		log.Error(err)
 		os.Exit(1)
 	}
-	app.Run(entity.NewDataBaseSettingsByPgConfig(configSettings.PostgresConfigs), serviceName, nil)
+	db, err := sql.Open("pgx", configSettings.PostgresConfigs.GetDSN(serviceName))
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
+	app.Run(db, serviceName, nil)
 }
