@@ -18,7 +18,6 @@ const (
 
 func setLogger(withLog bool) {
 	if withLog {
-		logger.SetDefaultLogger("")
 		goose.SetLogger(logger.GetLogger())
 	} else {
 		goose.SetLogger(&logrus.Logger{})
