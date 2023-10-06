@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"gitlab.enkod.tech/pkg/transactionoutbox/client"
 	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 	"time"
 )
@@ -13,7 +14,7 @@ type publisherLogic struct {
 	storeRepository entity.Store
 }
 
-func NewPublisherLogic(storeRepository entity.Store, serviceName string) entity.Publisher {
+func NewPublisherLogic(storeRepository entity.Store, serviceName string) client.Publisher {
 	return &publisherLogic{
 		storeRepository: storeRepository,
 		serviceName:     serviceName,
@@ -30,7 +31,7 @@ func (p *publisherLogic) validateMessage(message entity.Message) error {
 	return nil
 }
 
-func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}, headers ...entity.Header) error {
+func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}, headers ...client.Header) error {
 	message := entity.NewMessage(topic, data, headers)
 	err := p.validateMessage(message)
 	if err != nil {

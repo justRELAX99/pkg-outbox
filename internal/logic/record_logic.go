@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"gitlab.enkod.tech/pkg/transactionoutbox/client"
 	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 	"time"
@@ -16,16 +17,16 @@ const (
 
 type recordsLogic struct {
 	storeRepository entity.Store
-	transactor      entity.Transactor
-	broker          entity.Publisher
+	transactor      client.Transactor
+	broker          client.Publisher
 
 	syncGroup *entity.SyncGroup
 }
 
 func NewRecordsLogic(
 	storeRepository entity.Store,
-	transactor entity.Transactor,
-	broker entity.Publisher,
+	transactor client.Transactor,
+	broker client.Publisher,
 ) entity.RecordLogic {
 	r := &recordsLogic{
 		storeRepository: storeRepository,
