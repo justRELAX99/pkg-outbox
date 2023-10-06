@@ -1,8 +1,7 @@
-package broker_transaction_outbox
+package client
 
 import (
 	"github.com/sirupsen/logrus"
-	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 	"gitlab.enkod.tech/pkg/transactionoutbox/internal/logic"
 	"gitlab.enkod.tech/pkg/transactionoutbox/internal/repository"
 	"gitlab.enkod.tech/pkg/transactionoutbox/migration/app"
@@ -10,12 +9,12 @@ import (
 )
 
 func NewOutbox(
-	pgClient entity.Client,
-	tx entity.Transactor,
-	publisher entity.Publisher,
+	pgClient Client,
+	tx Transactor,
+	publisher Publisher,
 	serviceName string,
 	log *logrus.Logger,
-) (entity.RecordLogic, entity.Publisher) {
+) (RecordLogic, Publisher) {
 	if log != nil {
 		logger.SetLogger(log)
 	} else {

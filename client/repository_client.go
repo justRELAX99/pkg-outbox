@@ -1,4 +1,4 @@
-package entity
+package client
 
 import (
 	"context"
