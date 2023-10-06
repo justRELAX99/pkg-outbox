@@ -1,10 +1,10 @@
 package logic
 
 import (
-	"broker_transaction_outbox/internal/entity"
 	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 	"time"
 )
 

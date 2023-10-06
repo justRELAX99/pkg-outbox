@@ -1,4 +1,4 @@
-module broker_transaction_outbox
+module gitlab.enkod.tech/pkg/transactionoutbox
 
 go 1.21
 

@@ -1,9 +1,9 @@
 package config
 
 import (
-	"broker_transaction_outbox/pkg/config/entity"
 	"encoding/json"
 	"fmt"
+	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/config/entity"
 	"io/ioutil"
 	"log"
 )

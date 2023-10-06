@@ -1,14 +1,14 @@
 package app
 
 import (
-	"broker_transaction_outbox/pkg/environment"
-	"broker_transaction_outbox/pkg/logger"
 	"database/sql"
 	"flag"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
 	"github.com/pressly/goose/v3"
 	"github.com/sirupsen/logrus"
+	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/environment"
+	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 )
 
 const (

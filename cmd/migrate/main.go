@@ -1,15 +1,15 @@
 package main
 
 import (
-	"broker_transaction_outbox/migration/app"
-	"broker_transaction_outbox/pkg/config"
 	"database/sql"
 	log "github.com/sirupsen/logrus"
+	"gitlab.enkod.tech/pkg/transactionoutbox/migration/app"
+	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/config"
 	"os"
 )
 
 const (
-	serviceName = "broker_transaction_outbox_migration"
+	serviceName = "transaction_outbox_migration"
 )
 
 func main() {
