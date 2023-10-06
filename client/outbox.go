@@ -20,7 +20,8 @@ func NewOutbox(
 	}
 
 	app.Run(pgClient.GetSqlDB(), serviceName, map[string]string{
-		"c": "up",
+		"c":   "up",
+		"dir": "/migration/migrations",
 	})
 
 	var (
