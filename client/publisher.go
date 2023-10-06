@@ -23,5 +23,5 @@ func (h Headers) GetValidHeaders() Headers {
 }
 
 type Publisher interface {
-	Publish(context.Context, string, interface{}, ...Header) error
+	Publish(context.Context, string, interface{}) error
 }
