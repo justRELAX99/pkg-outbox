@@ -34,9 +34,12 @@ const (
 	//MaxAttemptsReached indicates that the message is not Delivered but the max attempts are reached so it shouldn't be delivered
 	MaxAttemptsReached
 )
+<<<<<<<< HEAD:client/record.go
 
 type RecordLogic interface {
 	StartProcessRecords()
 	StopProcessRecords()
 	ChangeRecordSettings
 }
+========
+>>>>>>>> 4d91334 (rebase files):internal/entity/record.go
