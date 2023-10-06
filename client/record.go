@@ -35,11 +35,14 @@ const (
 	MaxAttemptsReached
 )
 <<<<<<<< HEAD:client/record.go
+<<<<<<<< HEAD:client/record.go
 
 type RecordLogic interface {
 	StartProcessRecords()
 	StopProcessRecords()
 	ChangeRecordSettings
 }
+========
+>>>>>>>> 4d91334 (rebase files):internal/entity/record.go
 ========
 >>>>>>>> 4d91334 (rebase files):internal/entity/record.go
