@@ -36,8 +36,3 @@ const (
 	//MaxAttemptsReached indicates that the message is not Delivered but the max attempts are reached so it shouldn't be delivered
 	MaxAttemptsReached
 )
-
-type RecordLogic interface {
-	StartProcessRecords(countGoroutines int)
-	StopProcessRecords()
-}
