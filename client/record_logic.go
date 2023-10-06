@@ -3,6 +3,12 @@ package client
 import (
 	"context"
 	"github.com/pkg/errors"
+<<<<<<<< HEAD:client/record_logic.go
+========
+	log "github.com/sirupsen/logrus"
+	"gitlab.enkod.tech/pkg/transactionoutbox/client"
+	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
+>>>>>>>> bf63d70 (fix go mod):internal/logic/record_logic.go
 	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 	"time"
 )
@@ -14,6 +20,7 @@ const (
 )
 
 type recordsLogic struct {
+<<<<<<<< HEAD:client/record_logic.go
 	storeRepository Store
 	transactor      Transactor
 	broker          ReceivedPublisher
@@ -26,6 +33,20 @@ func newRecordsLogic(
 	transactor Transactor,
 	broker ReceivedPublisher,
 ) RecordLogic {
+========
+	storeRepository entity.Store
+	transactor      client.Transactor
+	broker          client.Publisher
+
+	syncGroup *entity.SyncGroup
+}
+
+func NewRecordsLogic(
+	storeRepository entity.Store,
+	transactor client.Transactor,
+	broker client.Publisher,
+) entity.RecordLogic {
+>>>>>>>> bf63d70 (fix go mod):internal/logic/record_logic.go
 	r := &recordsLogic{
 		storeRepository: storeRepository,
 		transactor:      transactor,
