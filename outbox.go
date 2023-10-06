@@ -1,12 +1,12 @@
 package broker_transaction_outbox
 
 import (
-	"broker_transaction_outbox/internal/entity"
-	"broker_transaction_outbox/internal/logic"
-	"broker_transaction_outbox/internal/repository"
-	"broker_transaction_outbox/migration/app"
-	"broker_transaction_outbox/pkg/logger"
 	"github.com/sirupsen/logrus"
+	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
+	"gitlab.enkod.tech/pkg/transactionoutbox/internal/logic"
+	"gitlab.enkod.tech/pkg/transactionoutbox/internal/repository"
+	"gitlab.enkod.tech/pkg/transactionoutbox/migration/app"
+	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 )
 
 func NewOutbox(
