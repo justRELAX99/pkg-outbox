@@ -2,7 +2,6 @@ package client
 
 import (
 	"github.com/sirupsen/logrus"
-	"gitlab.enkod.tech/pkg/transactionoutbox/internal/logic"
 	"gitlab.enkod.tech/pkg/transactionoutbox/internal/repository"
 	"gitlab.enkod.tech/pkg/transactionoutbox/migration/app"
 	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
@@ -30,8 +29,8 @@ func NewOutbox(
 	)
 
 	var (
-		recordLogic    = logic.NewRecordsLogic(storeRepository, tx, publisher)
-		publisherLogic = logic.NewPublisherLogic(storeRepository, serviceName)
+		recordLogic    = newRecordsLogic(storeRepository, tx, publisher)
+		publisherLogic = newPublisherLogic(storeRepository, serviceName)
 	)
 	return recordLogic, publisherLogic
 }

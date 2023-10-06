@@ -1,10 +1,9 @@
-package logic
+package client
 
 import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"gitlab.enkod.tech/pkg/transactionoutbox/client"
 	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 	"time"
 )
@@ -14,7 +13,7 @@ type publisherLogic struct {
 	storeRepository entity.Store
 }
 
-func NewPublisherLogic(storeRepository entity.Store, serviceName string) client.Publisher {
+func newPublisherLogic(storeRepository entity.Store, serviceName string) Publisher {
 	return &publisherLogic{
 		storeRepository: storeRepository,
 		serviceName:     serviceName,
