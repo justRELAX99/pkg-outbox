@@ -1,19 +1,18 @@
-package repository
+package client
 
 import (
 	"context"
 	"fmt"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/pkg/errors"
-	"gitlab.enkod.tech/pkg/transactionoutbox/client"
 	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 )
 
 type storeRepository struct {
-	client client.Client
+	client Client
 }
 
-func NewStoreRepository(client client.Client) entity.Store {
+func newStoreRepository(client Client) entity.Store {
 	return &storeRepository{
 		client: client,
 	}

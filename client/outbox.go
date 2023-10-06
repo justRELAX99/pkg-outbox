@@ -2,7 +2,6 @@ package client
 
 import (
 	"github.com/sirupsen/logrus"
-	"gitlab.enkod.tech/pkg/transactionoutbox/internal/repository"
 	"gitlab.enkod.tech/pkg/transactionoutbox/migration/app"
 	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 )
@@ -25,7 +24,7 @@ func NewOutbox(
 	})
 
 	var (
-		storeRepository = repository.NewStoreRepository(pgClient)
+		storeRepository = newStoreRepository(pgClient)
 	)
 
 	var (
