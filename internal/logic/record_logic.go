@@ -1,11 +1,11 @@
 package logic
 
 import (
-	"broker_transaction_outbox/internal/entity"
-	"broker_transaction_outbox/pkg/logger"
 	"context"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
+	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 	"time"
 )
 
