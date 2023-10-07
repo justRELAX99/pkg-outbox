@@ -12,7 +12,6 @@ func NewOutbox(
 	publisher Publisher,
 	serviceName string,
 	log *logrus.Logger,
-	path string,
 ) (RecordLogic, Publisher) {
 	if log != nil {
 		logger.SetLogger(log)
@@ -21,8 +20,7 @@ func NewOutbox(
 	}
 
 	app.Run(pgClient.GetSqlDB(), serviceName, map[string]string{
-		"c":   "up",
-		"dir": path,
+		"c": "up",
 	})
 
 	var (

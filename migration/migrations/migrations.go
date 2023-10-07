@@ -1,4 +1,7 @@
--- +goose Up
+package migrations
+
+func GetMigrationCreateOutboxTable() (string, string) {
+	return "00001_create_outbox_table.sql", `-- +goose Up
 CREATE TABLE IF NOT EXISTS outbox(
     uuid uuid NOT NULL,
     message jsonb NULL DEFAULT '{}'::jsonb,
@@ -9,4 +12,5 @@ CREATE TABLE IF NOT EXISTS outbox(
 );
 
 -- +goose Down
-DROP TABLE IF EXISTS outbox;
+DROP TABLE IF EXISTS outbox;`
+}
