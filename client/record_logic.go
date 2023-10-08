@@ -103,7 +103,7 @@ func (r *recordsLogic) publishRecords(ctx context.Context, records []entity.Reco
 	successfulRecords := make([]entity.Record, 0, len(records))
 	errorRecords := make([]entity.Record, 0, len(records))
 	for _, record := range records {
-		err := r.broker.Publish(ctx, record.Message.Topic, record.Message.Body)
+		err := r.broker.Publish(ctx, record.Message.Topic, record.Message.Body, record.Message.Headers...)
 		if err != nil {
 			errorRecords = append(errorRecords, record)
 		}

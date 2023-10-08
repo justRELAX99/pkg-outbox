@@ -30,8 +30,8 @@ func (p *publisherLogic) validateMessage(message entity.Message) error {
 	return nil
 }
 
-func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}) error {
-	message := entity.NewMessage(topic, data)
+func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}, headers ...Header) error {
+	message := entity.NewMessage(topic, data, headers)
 	err := p.validateMessage(message)
 	if err != nil {
 		return err
