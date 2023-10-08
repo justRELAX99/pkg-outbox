@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/georgysavva/scany/v2 v2.0.0
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.3.1
 	github.com/jackc/pgconn v1.14.1
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/pkg/errors v0.9.1
@@ -20,6 +20,7 @@ require (
 	github.com/jackc/pgproto3/v2 v2.3.2 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
+	gitlab.enkod.tech/pkg/kafka v0.0.0-20231008170144-59c353f3c837 // indirect
 	golang.org/x/crypto v0.10.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
