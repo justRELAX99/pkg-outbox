@@ -20,10 +20,10 @@ func newStoreRepository(client Client) entity.Store {
 
 func (s *storeRepository) AddRecord(ctx context.Context, record entity.Record) error {
 	query := fmt.Sprintf(`INSERT INTO %s
-	(uuid, message, state, created_on)
-	VALUES($1, $2, $3, $4);`,
+	(uuid, message, state, created_on,service_name)
+	VALUES($1, $2, $3, $4,$5);`,
 		outboxTable)
-	_, err := s.client.Exec(ctx, query, record.Uuid, record.Message, record.State, record.CreatedOn)
+	_, err := s.client.Exec(ctx, query, record.Uuid, record.Message, record.State, record.CreatedOn, record.ServiceName)
 	if err != nil {
 		return errors.Wrap(err, sqlErr)
 	}
