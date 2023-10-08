@@ -1,13 +1,17 @@
 package entity
 
+import "gitlab.enkod.tech/pkg/transactionoutbox/client"
+
 type Message struct {
-	Body  interface{} `json:"body"`
-	Topic string      `json:"topic"`
+	Headers client.Headers `json:"headers"`
+	Body    interface{}    `json:"body"`
+	Topic   string         `json:"topic"`
 }
 
-func NewMessage(topic string, body interface{}) Message {
+func NewMessage(topic string, body interface{}, headers client.Headers) Message {
 	return Message{
-		Topic: topic,
-		Body:  body,
+		Topic:   topic,
+		Body:    body,
+		Headers: headers.GetValidHeaders(),
 	}
 }
