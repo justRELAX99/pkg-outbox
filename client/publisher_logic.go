@@ -4,23 +4,22 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 	"time"
 )
 
 type publisherLogic struct {
 	serviceName     string
-	storeRepository entity.Store
+	storeRepository Store
 }
 
-func newPublisherLogic(storeRepository entity.Store, serviceName string) Publisher {
+func newPublisherLogic(storeRepository Store, serviceName string) Publisher {
 	return &publisherLogic{
 		storeRepository: storeRepository,
 		serviceName:     serviceName,
 	}
 }
 
-func (p *publisherLogic) validateMessage(message entity.Message) error {
+func (p *publisherLogic) validateMessage(message Message) error {
 	if message.Topic == "" {
 		return errors.New("invalid message, topic is empty")
 	}
@@ -31,16 +30,16 @@ func (p *publisherLogic) validateMessage(message entity.Message) error {
 }
 
 func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}, headers ...Header) error {
-	message := entity.NewMessage(topic, data, headers)
+	message := NewMessage(topic, data, headers)
 	err := p.validateMessage(message)
 	if err != nil {
 		return err
 	}
-	record := entity.Record{
+	record := Record{
 		ServiceName: p.serviceName,
 		Uuid:        uuid.New(),
 		Message:     message,
-		State:       entity.PendingDelivery,
+		State:       PendingDelivery,
 		CreatedOn:   time.Now().UTC().Unix(),
 	}
 	return p.storeRepository.AddRecord(ctx, record)

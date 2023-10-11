@@ -20,3 +20,15 @@ func (p PostgresConfig) GetDSN(serviceName string) string {
 		" application_name=" + serviceName
 
 }
+
+func (p PostgresConfig) GetMaxOpenConns() int {
+	return p.MaxOpenConns
+}
+
+func (p PostgresConfig) GetMaxAttempts() int {
+	return p.MaxAttempts
+}
+
+func (p PostgresConfig) GetMaxDelay() int {
+	return p.MaxDelay
+}

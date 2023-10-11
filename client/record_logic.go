@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
-	"gitlab.enkod.tech/pkg/transactionoutbox/internal/entity"
 	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 	"time"
 )
@@ -15,15 +14,15 @@ const (
 )
 
 type recordsLogic struct {
-	storeRepository entity.Store
+	storeRepository Store
 	transactor      Transactor
 	broker          Publisher
 
-	syncGroup *entity.SyncGroup
+	syncGroup *SyncGroup
 }
 
 func newRecordsLogic(
-	storeRepository entity.Store,
+	storeRepository Store,
 	transactor Transactor,
 	broker Publisher,
 ) RecordLogic {
@@ -31,7 +30,7 @@ func newRecordsLogic(
 		storeRepository: storeRepository,
 		transactor:      transactor,
 		broker:          broker,
-		syncGroup:       entity.NewSyncGroup(),
+		syncGroup:       NewSyncGroup(),
 	}
 	return r
 }
@@ -71,7 +70,7 @@ func (r *recordsLogic) processRecordsWork(ctx context.Context) error {
 		return errors.Wrap(err, "cant begin tx for process records")
 	}
 	defer r.transactor.Rollback(&ctx)
-	records, err := r.storeRepository.GetPendingRecords(ctx, entity.Filter{
+	records, err := r.storeRepository.GetPendingRecords(ctx, Filter{
 		Limit: defaultLimit,
 	})
 	if err != nil {
@@ -84,7 +83,7 @@ func (r *recordsLogic) processRecordsWork(ctx context.Context) error {
 	successfulRecords, errorRecords := r.publishRecords(ctx, records)
 	//TODO maybe we shouldn’t update the records status to err and stay pending
 	if len(errorRecords) > 0 {
-		err = r.storeRepository.UpdateRecordsStatus(ctx, errorRecords, entity.DeliveredErr)
+		err = r.storeRepository.UpdateRecordsStatus(ctx, errorRecords, DeliveredErr)
 		if err != nil {
 			log.WithError(err).Error("cant update status for records with error")
 		}
@@ -99,9 +98,9 @@ func (r *recordsLogic) processRecordsWork(ctx context.Context) error {
 	return r.transactor.Commit(&ctx)
 }
 
-func (r *recordsLogic) publishRecords(ctx context.Context, records []entity.Record) (entity.Records, entity.Records) {
-	successfulRecords := make([]entity.Record, 0, len(records))
-	errorRecords := make([]entity.Record, 0, len(records))
+func (r *recordsLogic) publishRecords(ctx context.Context, records []Record) (Records, Records) {
+	successfulRecords := make([]Record, 0, len(records))
+	errorRecords := make([]Record, 0, len(records))
 	for _, record := range records {
 		err := r.broker.Publish(ctx, record.Message.Topic, record.Message.Body, record.Message.Headers...)
 		if err != nil {
