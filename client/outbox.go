@@ -9,10 +9,10 @@ import (
 func NewOutbox(
 	pgClient Client,
 	tx Transactor,
-	publisher Publisher,
+	publisher ReceivedPublisher,
 	serviceName string,
 	log *logrus.Logger,
-) (RecordLogic, Publisher) {
+) (RecordLogic, GivenPublisher) {
 	if log != nil {
 		logger.SetLogger(log)
 	} else {

@@ -23,8 +23,7 @@ func Run(configSettings configEntity.Settings, serviceName string) {
 			serviceName,
 			nil,
 			"local_")
-		transactionOutboxAdapter     = client.NewKafkaAdapter(k)
-		transactionOutbox, publisher = client.NewOutbox(pgClient, transactor, transactionOutboxAdapter, serviceName, nil)
+		transactionOutbox, publisher = client.NewOutbox(pgClient, transactor, k, serviceName, nil)
 	)
 	testConsumer(testTopic, k)
 	testProducer(testTopic, publisher)
@@ -44,10 +43,9 @@ func testConsumer(topic string, k kafkaClient.Client) {
 	})
 }
 
-func testProducer(topic string, k client.Publisher) {
-	err := k.Publish(context.Background(), topic, "test", kafkaClient.MessageHeader{
-		Key:   "test",
-		Value: []byte("test"),
+func testProducer(topic string, k client.GivenPublisher) {
+	err := k.Publish(context.Background(), topic, "test", map[string][]byte{
+		"test": []byte("test"),
 	})
 	if err != nil {
 		logger.GetLogger().WithError(err).Error("produce err")

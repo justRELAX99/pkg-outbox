@@ -1,7 +1,8 @@
 package client
 
 type CustomMessage interface {
-	GetHeaders() Headers
+	GetBody() []byte
+	Headers
 }
 
 type Message struct {
@@ -10,14 +11,25 @@ type Message struct {
 	Topic   string         `json:"topic"`
 }
 
-func (m *Message) GetHeaders() Headers {
-	return m.Headers.ToHeaders()
+func (m Message) GetBody() []byte {
+	//TODO implement me
+	panic("implement me")
 }
 
-func NewMessage(topic string, body interface{}, headers Headers) Message {
+func (m *Message) SetHeader(key string, value []byte) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m Message) GetValueByKey(key string) []byte {
+	//TODO implement me
+	panic("implement me")
+}
+
+func NewMessage(topic string, body interface{}, headers ...map[string][]byte) Message {
 	return Message{
 		Topic:   topic,
 		Body:    body,
-		Headers: NewMessageHeaders(headers),
+		Headers: NewMessageHeaders(headers...),
 	}
 }

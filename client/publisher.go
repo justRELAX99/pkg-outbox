@@ -4,9 +4,13 @@ import (
 	"context"
 )
 
-type Pre func(ctx context.Context, message *Message)
+type Pre func(ctx context.Context, message CustomMessage)
 
-type Publisher interface {
+type ReceivedPublisher interface {
+	Publish(context.Context, string, interface{}, ...map[string][]byte) error
+}
+
+type GivenPublisher interface {
 	PrePublish(Pre)
-	Publish(context.Context, string, interface{}, ...Header) error
+	Publish(context.Context, string, interface{}, ...map[string][]byte) error
 }

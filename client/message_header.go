@@ -15,24 +15,23 @@ func (m MessageHeader) GetValue() []byte {
 
 type MessageHeaders []MessageHeader
 
-func NewMessageHeaders(headers Headers) MessageHeaders {
+func NewMessageHeaders(headers ...map[string][]byte) MessageHeaders {
 	messageHeaders := make(MessageHeaders, 0, len(headers))
 	for _, h := range headers {
-		if h == nil {
-			continue
+		for key, value := range h {
+			messageHeaders = append(messageHeaders, MessageHeader{
+				Key:   key,
+				Value: value,
+			})
 		}
-		messageHeaders = append(messageHeaders, MessageHeader{
-			Key:   h.GetKey(),
-			Value: h.GetValue(),
-		})
 	}
 	return messageHeaders
 }
 
-func (m MessageHeaders) ToHeaders() Headers {
-	headers := make(Headers, len(m))
-	for i, h := range m {
-		headers[i] = h
+func (m MessageHeaders) ToMap() map[string][]byte {
+	headers := make(map[string][]byte, len(m))
+	for _, h := range m {
+		headers[h.Key] = h.Value
 	}
 	return headers
 }

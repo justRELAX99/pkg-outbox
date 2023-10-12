@@ -16,7 +16,7 @@ const (
 type recordsLogic struct {
 	storeRepository Store
 	transactor      Transactor
-	broker          Publisher
+	broker          ReceivedPublisher
 
 	syncGroup *SyncGroup
 }
@@ -24,7 +24,7 @@ type recordsLogic struct {
 func newRecordsLogic(
 	storeRepository Store,
 	transactor Transactor,
-	broker Publisher,
+	broker ReceivedPublisher,
 ) RecordLogic {
 	r := &recordsLogic{
 		storeRepository: storeRepository,
@@ -102,7 +102,7 @@ func (r *recordsLogic) publishRecords(ctx context.Context, records []Record) (Re
 	successfulRecords := make([]Record, 0, len(records))
 	errorRecords := make([]Record, 0, len(records))
 	for _, record := range records {
-		err := r.broker.Publish(ctx, record.Message.Topic, record.Message.Body, record.Message.Headers.ToHeaders()...)
+		err := r.broker.Publish(ctx, record.Message.Topic, record.Message.Body, record.Message.Headers.ToMap())
 		if err != nil {
 			errorRecords = append(errorRecords, record)
 		}

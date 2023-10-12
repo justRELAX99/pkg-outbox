@@ -13,7 +13,7 @@ type publisherLogic struct {
 	prePublish      []Pre
 }
 
-func newPublisherLogic(storeRepository Store, serviceName string) Publisher {
+func newPublisherLogic(storeRepository Store, serviceName string) GivenPublisher {
 	return &publisherLogic{
 		storeRepository: storeRepository,
 		serviceName:     serviceName,
@@ -30,8 +30,8 @@ func (p *publisherLogic) validateMessage(message Message) error {
 	return nil
 }
 
-func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}, headers ...Header) error {
-	message := NewMessage(topic, data, headers)
+func (p *publisherLogic) Publish(ctx context.Context, topic string, data interface{}, headers ...map[string][]byte) error {
+	message := NewMessage(topic, data, headers...)
 	err := p.validateMessage(message)
 	if err != nil {
 		return err
