@@ -152,6 +152,8 @@ github.com/vm-affekt/logrustash v0.0.0-20200319075716-0e0c1586c1f2/go.mod h1:dnk
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 gitlab.enkod.tech/pkg/kafka v0.0.0-20231008170144-59c353f3c837 h1:/k4BCIRdkRijRIoXAO+WnPdDeaXCrP6Cw4NBm8Y70Ts=
 gitlab.enkod.tech/pkg/kafka v0.0.0-20231008170144-59c353f3c837/go.mod h1:aZhGTHUjaI46i4FB8yZnLnje3B/FMHTLCU6KlSMPbPU=
+gitlab.enkod.tech/pkg/kafka v0.0.0-20231012072513-4c98c6a8ee82 h1:v7uuJK+ZpjhPcE7lyU6eI3hw264vrgAUrzNP9pynpg4=
+gitlab.enkod.tech/pkg/kafka v0.0.0-20231012072513-4c98c6a8ee82/go.mod h1:aZhGTHUjaI46i4FB8yZnLnje3B/FMHTLCU6KlSMPbPU=
 gitlab.enkod.tech/pkg/postgres v0.0.0-20231008142222-7eb81034b887 h1:cPvqDNjdPOFFnG+rXs62GYo4NhD6yQaJCwILWKzW90g=
 gitlab.enkod.tech/pkg/postgres v0.0.0-20231008142222-7eb81034b887/go.mod h1:mRqQwdiu2UV09iaviVgVt+I2xXWhZ/eC8bee3XIql4Q=
 go.opentelemetry.io/proto/otlp v0.7.0/go.mod h1:PqfVotwruBrMGOCsRd/89rSnXhoiJIqeYNgFYFoEGnI=

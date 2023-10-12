@@ -26,11 +26,14 @@ func Run(configSettings configEntity.Settings, serviceName string) {
 		transactionOutboxAdapter     = client.NewKafkaAdapter(k)
 		transactionOutbox, publisher = client.NewOutbox(pgClient, transactor, transactionOutboxAdapter, serviceName, nil)
 	)
-	transactionOutbox.StartProcessRecords(1)
 	testConsumer(testTopic, k)
 	testProducer(testTopic, publisher)
+	k.Start()
+
+	transactionOutbox.StartProcessRecords(1)
 	time.Sleep(time.Second * 10)
 	transactionOutbox.StopProcessRecords()
+	select {}
 }
 
 func testConsumer(topic string, k kafkaClient.Client) {

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	serviceName = "transaction_outbox_migration"
+	serviceName = "transaction_outbox"
 )
 
 func main() {
