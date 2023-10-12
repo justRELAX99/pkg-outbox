@@ -4,12 +4,9 @@ import (
 	"context"
 )
 
-type (
-	MessageHandler func(ctx context.Context, message CustomMessage) error
-	MiddlewareFunc func(next MessageHandler) MessageHandler
-)
+type Pre func(ctx context.Context, message *Message)
 
 type Publisher interface {
-	Pre(mw ...MiddlewareFunc)
+	PrePublish(Pre)
 	Publish(context.Context, string, interface{}, ...Header) error
 }

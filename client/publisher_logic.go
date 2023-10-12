@@ -10,6 +10,7 @@ import (
 type publisherLogic struct {
 	serviceName     string
 	storeRepository Store
+	prePublish      []Pre
 }
 
 func newPublisherLogic(storeRepository Store, serviceName string) Publisher {
@@ -35,6 +36,9 @@ func (p *publisherLogic) Publish(ctx context.Context, topic string, data interfa
 	if err != nil {
 		return err
 	}
+	for _, pre := range p.prePublish {
+		pre(ctx, &message)
+	}
 	record := Record{
 		ServiceName: p.serviceName,
 		Uuid:        uuid.New(),
@@ -43,4 +47,8 @@ func (p *publisherLogic) Publish(ctx context.Context, topic string, data interfa
 		CreatedOn:   time.Now().UTC().Unix(),
 	}
 	return p.storeRepository.AddRecord(ctx, record)
+}
+
+func (p *publisherLogic) PrePublish(pre Pre) {
+	p.prePublish = append(p.prePublish, pre)
 }
