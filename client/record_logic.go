@@ -3,21 +3,21 @@ package client
 import (
 	"context"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 	"time"
 )
 
 const (
-	defaultLimit                   = 1
-	defaultProcessRecordsSleepTime = time.Second
+	defaultLimit                   = 100
+	defaultCountGoroutines         = 1
+	defaultProcessRecordsSleepTime = time.Second * 5
 )
 
 type recordsLogic struct {
 	storeRepository Store
 	transactor      Transactor
 	broker          ReceivedPublisher
-
+	RecordSettings
 	syncGroup *SyncGroup
 }
 
@@ -31,13 +31,18 @@ func newRecordsLogic(
 		transactor:      transactor,
 		broker:          broker,
 		syncGroup:       NewSyncGroup(),
+		RecordSettings: RecordSettings{
+			SelectLimit:     defaultLimit,
+			CountGoroutines: defaultCountGoroutines,
+			SleepTime:       defaultProcessRecordsSleepTime,
+		},
 	}
 	return r
 }
 
-func (r *recordsLogic) StartProcessRecords(countGoroutines int) {
-	r.syncGroup.Add(countGoroutines)
-	for i := 0; i < countGoroutines; i++ {
+func (r *recordsLogic) StartProcessRecords() {
+	r.syncGroup.Add(r.CountGoroutines)
+	for i := 0; i < r.CountGoroutines; i++ {
 		go r.processRecords()
 	}
 }
@@ -51,7 +56,7 @@ func (r *recordsLogic) processRecords() {
 	ctx := context.Background()
 	log := logger.GetLogger()
 	for {
-		time.Sleep(defaultProcessRecordsSleepTime)
+		time.Sleep(r.SleepTime)
 		select {
 		case <-r.syncGroup.IsDone():
 			return
@@ -71,7 +76,7 @@ func (r *recordsLogic) processRecordsWork(ctx context.Context) error {
 	}
 	defer r.transactor.Rollback(&ctx)
 	records, err := r.storeRepository.GetPendingRecords(ctx, Filter{
-		Limit: defaultLimit,
+		Limit: r.SelectLimit,
 	})
 	if err != nil {
 		return errors.Wrap(err, "cant get pending records")
@@ -80,6 +85,7 @@ func (r *recordsLogic) processRecordsWork(ctx context.Context) error {
 		return nil
 	}
 
+	log := logger.GetLogger()
 	successfulRecords, errorRecords := r.publishRecords(ctx, records)
 	//TODO maybe we shouldn’t update the records status to err and stay pending
 	if len(errorRecords) > 0 {

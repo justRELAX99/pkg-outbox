@@ -36,6 +36,7 @@ const (
 )
 
 type RecordLogic interface {
-	StartProcessRecords(countGoroutines int)
+	StartProcessRecords()
 	StopProcessRecords()
+	ChangeRecordSettings
 }

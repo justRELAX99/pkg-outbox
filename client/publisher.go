@@ -12,5 +12,5 @@ type ReceivedPublisher interface {
 
 type GivenPublisher interface {
 	PrePublish(Pre)
-	Publish(context.Context, string, interface{}, ...map[string][]byte) error
+	ReceivedPublisher
 }
