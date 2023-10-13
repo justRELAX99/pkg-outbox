@@ -1,6 +1,8 @@
 package client
 
-import "time"
+import (
+	"time"
+)
 
 type ChangeRecordSettings interface {
 	SetSelectLimit(int)
@@ -9,18 +11,18 @@ type ChangeRecordSettings interface {
 }
 
 type RecordSettings struct {
-	SelectLimit     int
-	CountGoroutines int
-	SleepTime       time.Duration
+	selectLimit     int
+	countGoroutines int
+	sleepTime       time.Duration
 }
 
 func (r *RecordSettings) SetSelectLimit(limit int) {
-	r.SelectLimit = limit
+	r.selectLimit = limit
 }
 
 func (r *RecordSettings) SetCountGoroutines(countGoroutines int) {
-	r.CountGoroutines = countGoroutines
+	r.countGoroutines = countGoroutines
 }
 func (r *RecordSettings) SetSleepTime(duration time.Duration) {
-	r.SleepTime = duration
+	r.sleepTime = duration
 }

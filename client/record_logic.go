@@ -32,17 +32,17 @@ func newRecordsLogic(
 		broker:          broker,
 		syncGroup:       NewSyncGroup(),
 		RecordSettings: RecordSettings{
-			SelectLimit:     defaultLimit,
-			CountGoroutines: defaultCountGoroutines,
-			SleepTime:       defaultProcessRecordsSleepTime,
+			selectLimit:     defaultLimit,
+			countGoroutines: defaultCountGoroutines,
+			sleepTime:       defaultProcessRecordsSleepTime,
 		},
 	}
 	return r
 }
 
 func (r *recordsLogic) StartProcessRecords() {
-	r.syncGroup.Add(r.CountGoroutines)
-	for i := 0; i < r.CountGoroutines; i++ {
+	r.syncGroup.Add(r.countGoroutines)
+	for i := 0; i < r.countGoroutines; i++ {
 		go r.processRecords()
 	}
 }
@@ -56,7 +56,7 @@ func (r *recordsLogic) processRecords() {
 	ctx := context.Background()
 	log := logger.GetLogger()
 	for {
-		time.Sleep(r.SleepTime)
+		time.Sleep(r.sleepTime)
 		select {
 		case <-r.syncGroup.IsDone():
 			return
@@ -76,7 +76,7 @@ func (r *recordsLogic) processRecordsWork(ctx context.Context) error {
 	}
 	defer r.transactor.Rollback(&ctx)
 	records, err := r.storeRepository.GetPendingRecords(ctx, Filter{
-		Limit: r.SelectLimit,
+		Limit: r.selectLimit,
 	})
 	if err != nil {
 		return errors.Wrap(err, "cant get pending records")
