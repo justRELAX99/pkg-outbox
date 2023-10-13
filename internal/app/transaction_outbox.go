@@ -29,7 +29,7 @@ func Run(configSettings configEntity.Settings, serviceName string) {
 	testProducer(testTopic, publisher)
 	k.Start()
 
-	transactionOutbox.StartProcessRecords(1)
+	transactionOutbox.StartProcessRecords()
 	time.Sleep(time.Second * 10)
 	transactionOutbox.StopProcessRecords()
 	select {}
