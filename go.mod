@@ -17,6 +17,7 @@ require (
 
 require (
 	github.com/CossackPyra/pyraconv v0.0.0-20160929170942-7dca3cfe0c8a // indirect
+	github.com/enkodio/pkg-postgres v0.0.0-20231031150953-8a8abf7e0da4 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect

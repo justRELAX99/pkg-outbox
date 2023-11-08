@@ -2,20 +2,17 @@ package client
 
 import (
 	"context"
-	"database/sql"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgconn"
+	pg "github.com/enkodio/pkg-postgres/client"
 )
 
-type Client interface {
-	Exec(context.Context, string, ...interface{}) (pgconn.CommandTag, error)
-	Query(context.Context, string, ...interface{}) (pgx.Rows, error)
-	QueryRow(context.Context, string, ...interface{}) pgx.Row
-	GetSqlDB() *sql.DB
+type RepositoryClient interface {
+	Exec(context.Context, string, ...interface{}) (pg.CommandTag, error)
+	Query(context.Context, string, ...interface{}) (pg.Rows, error)
+	QueryRow(context.Context, string, ...interface{}) pg.Row
 }
 
 type Transactor interface {
 	Begin(*context.Context) error
-	Rollback(*context.Context)
-	Commit(*context.Context) error
+	Rollback(ctx *context.Context)
+	Commit(ctx *context.Context) error
 }

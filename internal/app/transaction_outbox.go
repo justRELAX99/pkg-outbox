@@ -5,8 +5,8 @@ import (
 	"github.com/enkodio/pkg-outbox/client"
 	configEntity "github.com/enkodio/pkg-outbox/pkg/config/entity"
 	"github.com/enkodio/pkg-outbox/pkg/logger"
+	postgres "github.com/enkodio/pkg-postgres/client"
 	kafkaClient "gitlab.enkod.tech/pkg/kafka/client"
-	postgres "gitlab.enkod.tech/pkg/postgres/client"
 	"time"
 )
 

@@ -3,8 +3,8 @@ package client
 import (
 	"context"
 	"github.com/enkodio/pkg-outbox/pkg/logger"
+	"github.com/enkodio/pkg-postgres/client"
 	"github.com/pkg/errors"
-	"gitlab.enkod.tech/pkg/postgres/client"
 	"time"
 )
 
