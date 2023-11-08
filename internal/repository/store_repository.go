@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 	"github.com/enkodio/pkg-outbox/internal/entity"
+	"github.com/enkodio/pkg-outbox/outbox"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/pkg/errors"
 )
 
 type storeRepository struct {
-	client entity.RepositoryClient
+	client outbox.RepositoryClient
 }
 
-func NewStoreRepository(client entity.RepositoryClient) entity.Store {
+func NewStoreRepository(client outbox.RepositoryClient) entity.Store {
 	return &storeRepository{
 		client: client,
 	}

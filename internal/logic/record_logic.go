@@ -18,7 +18,7 @@ const (
 
 type RecordsLogic struct {
 	storeRepository entity.Store
-	transactor      entity.Transactor
+	transactor      outbox.Transactor
 	broker          outbox.Publisher
 	entity.RecordSettings
 	syncGroup *entity.SyncGroup

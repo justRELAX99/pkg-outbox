@@ -1,7 +1,6 @@
 package client
 
 import (
-	"github.com/enkodio/pkg-outbox/internal/entity"
 	"github.com/enkodio/pkg-outbox/internal/logic"
 	"github.com/enkodio/pkg-outbox/internal/repository"
 	"github.com/enkodio/pkg-outbox/migration/app"
@@ -11,8 +10,8 @@ import (
 )
 
 func NewOutbox(
-	pgClient entity.RepositoryClient,
-	tx entity.Transactor,
+	pgClient outbox.RepositoryClient,
+	tx outbox.Transactor,
 	publisher outbox.Publisher,
 	serviceName string,
 	log *logrus.Logger,
