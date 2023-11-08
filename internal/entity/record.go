@@ -1,12 +1,15 @@
-package client
+package entity
 
-import "github.com/google/uuid"
+import (
+	"github.com/enkodio/pkg-outbox/outbox"
+	"github.com/google/uuid"
+)
 
 // Record represents the record that is stored and retrieved from the database
 type Record struct {
 	ServiceName string
 	Uuid        uuid.UUID
-	Message     Message
+	Message     outbox.Message
 	State       RecordState
 	CreatedOn   int64
 }
@@ -34,9 +37,3 @@ const (
 	//MaxAttemptsReached indicates that the message is not Delivered but the max attempts are reached so it shouldn't be delivered
 	MaxAttemptsReached
 )
-
-type RecordLogic interface {
-	StartProcessRecords()
-	StopProcessRecords()
-	ChangeRecordSettings
-}

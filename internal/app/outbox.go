@@ -4,6 +4,8 @@ import (
 	"context"
 	kafkaClient "github.com/enkodio/pkg-kafka/client"
 	"github.com/enkodio/pkg-outbox/client"
+	"github.com/enkodio/pkg-outbox/outbox"
+
 	configEntity "github.com/enkodio/pkg-outbox/pkg/config/entity"
 	"github.com/enkodio/pkg-outbox/pkg/logger"
 	postgres "github.com/enkodio/pkg-postgres/client"
@@ -43,7 +45,7 @@ func testConsumer(topic string, k kafkaClient.Client) {
 	})
 }
 
-func testProducer(topic string, k client.GivenPublisher) {
+func testProducer(topic string, k outbox.Publisher) {
 	err := k.Publish(context.Background(), topic, "test", map[string][]byte{
 		"test": []byte("test"),
 	})

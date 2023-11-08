@@ -1,18 +1,22 @@
 package client
 
 import (
+	"github.com/enkodio/pkg-outbox/internal/entity"
+	"github.com/enkodio/pkg-outbox/internal/logic"
+	"github.com/enkodio/pkg-outbox/internal/repository"
 	"github.com/enkodio/pkg-outbox/migration/app"
+	"github.com/enkodio/pkg-outbox/outbox"
 	"github.com/enkodio/pkg-outbox/pkg/logger"
 	"github.com/sirupsen/logrus"
 )
 
 func NewOutbox(
-	pgClient RepositoryClient,
-	tx Transactor,
-	publisher ReceivedPublisher,
+	pgClient entity.RepositoryClient,
+	tx entity.Transactor,
+	publisher outbox.Publisher,
 	serviceName string,
 	log *logrus.Logger,
-) (RecordLogic, GivenPublisher) {
+) (outbox.RecordLogic, outbox.OutboxPublisher) {
 	if log != nil {
 		logger.SetLogger(log)
 	} else {
@@ -25,12 +29,12 @@ func NewOutbox(
 	})
 
 	var (
-		storeRepository = newStoreRepository(pgClient)
+		storeRepository = repository.NewStoreRepository(pgClient)
 	)
 
 	var (
-		recordLogic    = newRecordsLogic(storeRepository, tx, publisher)
-		publisherLogic = newPublisherLogic(storeRepository, serviceName)
+		recordLogic    = logic.NewRecordsLogic(storeRepository, tx, publisher)
+		publisherLogic = logic.NewPublisherLogic(storeRepository, serviceName)
 	)
 	return recordLogic, publisherLogic
 }
