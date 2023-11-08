@@ -7,7 +7,7 @@ import (
 )
 
 func NewOutbox(
-	pgClient Client,
+	pgClient RepositoryClient,
 	tx Transactor,
 	publisher ReceivedPublisher,
 	serviceName string,

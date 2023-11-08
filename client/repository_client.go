@@ -2,13 +2,13 @@ package client
 
 import (
 	"context"
+	"database/sql"
 	pg "github.com/enkodio/pkg-postgres/client"
 )
 
 type RepositoryClient interface {
-	Exec(context.Context, string, ...interface{}) (pg.CommandTag, error)
 	Query(context.Context, string, ...interface{}) (pg.Rows, error)
-	QueryRow(context.Context, string, ...interface{}) pg.Row
+	GetSqlDB() *sql.DB
 }
 
 type Transactor interface {
