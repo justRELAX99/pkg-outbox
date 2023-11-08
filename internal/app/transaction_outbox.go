@@ -2,11 +2,11 @@ package app
 
 import (
 	"context"
+	"github.com/enkodio/pkg-outbox/client"
+	configEntity "github.com/enkodio/pkg-outbox/pkg/config/entity"
+	"github.com/enkodio/pkg-outbox/pkg/logger"
 	kafkaClient "gitlab.enkod.tech/pkg/kafka/client"
 	postgres "gitlab.enkod.tech/pkg/postgres/client"
-	"gitlab.enkod.tech/pkg/transactionoutbox/client"
-	configEntity "gitlab.enkod.tech/pkg/transactionoutbox/pkg/config/entity"
-	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 	"time"
 )
 

@@ -1,4 +1,4 @@
-module gitlab.enkod.tech/pkg/transactionoutbox
+module github.com/enkodio/pkg-outbox
 
 go 1.21
 

@@ -1,9 +1,9 @@
 package client
 
 import (
+	"github.com/enkodio/pkg-outbox/migration/app"
+	"github.com/enkodio/pkg-outbox/pkg/logger"
 	"github.com/sirupsen/logrus"
-	"gitlab.enkod.tech/pkg/transactionoutbox/migration/app"
-	"gitlab.enkod.tech/pkg/transactionoutbox/pkg/logger"
 )
 
 func NewOutbox(
