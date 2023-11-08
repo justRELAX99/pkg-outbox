@@ -8,6 +8,7 @@ import (
 
 type RepositoryClient interface {
 	Query(context.Context, string, ...interface{}) (pg.Rows, error)
+	Exec(context.Context, string, ...interface{}) (pg.CommandTag, error)
 	GetSqlDB() *sql.DB
 }
 

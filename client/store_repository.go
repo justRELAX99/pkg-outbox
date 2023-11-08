@@ -8,10 +8,10 @@ import (
 )
 
 type storeRepository struct {
-	client Client
+	client RepositoryClient
 }
 
-func newStoreRepository(client Client) Store {
+func newStoreRepository(client RepositoryClient) Store {
 	return &storeRepository{
 		client: client,
 	}
