@@ -22,7 +22,7 @@ func NewOutbox(
 		logger.SetDefaultLogger("debug")
 	}
 
-	app.Run(pgClient.GetSqlDB(), serviceName, map[string]string{
+	app.Run(pgClient.GetSqlDB(), map[string]string{
 		"c":   "up",
 		"dir": "/migration/migrations",
 	})

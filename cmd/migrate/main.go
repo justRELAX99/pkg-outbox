@@ -23,5 +23,5 @@ func main() {
 		log.Error(err)
 		os.Exit(1)
 	}
-	app.Run(db, serviceName, nil)
+	app.Run(db, nil)
 }
