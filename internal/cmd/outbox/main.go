@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/enkodio/pkg-outbox/internal/app"
+	"github.com/enkodio/pkg-outbox/internal/outbox/app"
 	"github.com/enkodio/pkg-outbox/internal/pkg/config"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -12,7 +12,7 @@ const (
 )
 
 func main() {
-	configSettings, err := config.LoadConfigSettingsByPath("cmd/configs")
+	configSettings, err := config.LoadConfigSettingsByPath("internal/cmd/configs")
 	if err != nil {
 		log.Error(err)
 		os.Exit(2)

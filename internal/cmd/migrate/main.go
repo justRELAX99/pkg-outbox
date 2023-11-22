@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"github.com/enkodio/pkg-outbox/internal/migration/app"
 	"github.com/enkodio/pkg-outbox/internal/pkg/config"
-	"github.com/enkodio/pkg-outbox/migration/app"
 	log "github.com/sirupsen/logrus"
 	"os"
 )
@@ -13,7 +13,7 @@ const (
 )
 
 func main() {
-	configSettings, err := config.LoadConfigSettingsByPath("cmd/configs")
+	configSettings, err := config.LoadConfigSettingsByPath("internal/cmd/configs")
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)

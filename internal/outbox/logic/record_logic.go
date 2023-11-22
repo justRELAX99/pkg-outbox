@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"github.com/enkodio/pkg-outbox/internal/entity"
+	entity2 "github.com/enkodio/pkg-outbox/internal/outbox/entity"
 	"github.com/enkodio/pkg-outbox/internal/pkg/logger"
 	"github.com/enkodio/pkg-outbox/outbox"
 	pgClient "github.com/enkodio/pkg-postgres/client"
@@ -17,15 +17,15 @@ const (
 )
 
 type RecordsLogic struct {
-	storeRepository entity.Store
+	storeRepository entity2.Store
 	transactor      outbox.Transactor
 	broker          outbox.Publisher
-	entity.RecordSettings
-	syncGroup *entity.SyncGroup
+	entity2.RecordSettings
+	syncGroup *entity2.SyncGroup
 }
 
 func NewRecordsLogic(
-	storeRepository entity.Store,
+	storeRepository entity2.Store,
 	transactor pgClient.Transactor,
 	broker outbox.Publisher,
 ) *RecordsLogic {
@@ -33,8 +33,8 @@ func NewRecordsLogic(
 		storeRepository: storeRepository,
 		transactor:      transactor,
 		broker:          broker,
-		syncGroup:       entity.NewSyncGroup(),
-		RecordSettings: entity.RecordSettings{
+		syncGroup:       entity2.NewSyncGroup(),
+		RecordSettings: entity2.RecordSettings{
 			SelectLimit:     defaultLimit,
 			CountGoroutines: defaultCountGoroutines,
 			SleepTime:       defaultProcessRecordsSleepTime,
@@ -78,7 +78,7 @@ func (r *RecordsLogic) processRecordsWork(ctx context.Context) error {
 		return errors.Wrap(err, "cant begin tx for process records")
 	}
 	defer r.transactor.Rollback(&ctx)
-	records, err := r.storeRepository.GetPendingRecords(ctx, entity.Filter{
+	records, err := r.storeRepository.GetPendingRecords(ctx, entity2.Filter{
 		Limit: r.SelectLimit,
 	})
 	if err != nil {
@@ -92,7 +92,7 @@ func (r *RecordsLogic) processRecordsWork(ctx context.Context) error {
 	successfulRecords, errorRecords := r.publishRecords(ctx, records)
 	//TODO maybe we shouldn’t update the records status to err and stay pending
 	if len(errorRecords) > 0 {
-		err = r.storeRepository.UpdateRecordsStatus(ctx, errorRecords, entity.DeliveredErr)
+		err = r.storeRepository.UpdateRecordsStatus(ctx, errorRecords, entity2.DeliveredErr)
 		if err != nil {
 			log.WithError(err).Error("cant update status for records with error")
 		}
@@ -107,9 +107,9 @@ func (r *RecordsLogic) processRecordsWork(ctx context.Context) error {
 	return r.transactor.Commit(&ctx)
 }
 
-func (r *RecordsLogic) publishRecords(ctx context.Context, records []entity.Record) (entity.Records, entity.Records) {
-	successfulRecords := make([]entity.Record, 0, len(records))
-	errorRecords := make([]entity.Record, 0, len(records))
+func (r *RecordsLogic) publishRecords(ctx context.Context, records []entity2.Record) (entity2.Records, entity2.Records) {
+	successfulRecords := make([]entity2.Record, 0, len(records))
+	errorRecords := make([]entity2.Record, 0, len(records))
 	for _, record := range records {
 		err := r.broker.Publish(ctx, record.Message.Topic, record.Message.Body, record.Message.Headers.ToMap())
 		if err != nil {

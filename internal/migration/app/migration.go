@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"flag"
+	"github.com/enkodio/pkg-outbox/internal/migration/migrations"
 	"github.com/enkodio/pkg-outbox/internal/pkg/environment"
-	"github.com/enkodio/pkg-outbox/migration/migrations"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
 )
