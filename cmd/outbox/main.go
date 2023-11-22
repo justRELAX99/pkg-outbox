@@ -12,7 +12,7 @@ const (
 )
 
 func main() {
-	configSettings, err := config.LoadConfigSettingsByPath("configs")
+	configSettings, err := config.LoadConfigSettingsByPath("cmd/configs")
 	if err != nil {
 		log.Error(err)
 		os.Exit(2)
