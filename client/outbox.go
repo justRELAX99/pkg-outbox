@@ -2,7 +2,7 @@ package client
 
 import (
 	"github.com/enkodio/pkg-outbox/internal/migration/app"
-	logic2 "github.com/enkodio/pkg-outbox/internal/outbox/logic"
+	"github.com/enkodio/pkg-outbox/internal/outbox/logic"
 	"github.com/enkodio/pkg-outbox/internal/outbox/repository"
 	"github.com/enkodio/pkg-outbox/internal/pkg/logger"
 	"github.com/enkodio/pkg-outbox/outbox"
@@ -32,8 +32,8 @@ func NewOutbox(
 	)
 
 	var (
-		recordLogic    = logic2.NewRecordsLogic(storeRepository, tx, publisher)
-		publisherLogic = logic2.NewPublisherLogic(storeRepository, serviceName)
+		recordLogic    = logic.NewRecordsLogic(storeRepository, tx, publisher)
+		publisherLogic = logic.NewPublisherLogic(storeRepository, serviceName)
 	)
 	return recordLogic, publisherLogic
 }

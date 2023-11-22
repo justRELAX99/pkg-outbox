@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	entity2 "github.com/enkodio/pkg-outbox/internal/outbox/entity"
+	"github.com/enkodio/pkg-outbox/internal/outbox/entity"
 	"github.com/enkodio/pkg-outbox/outbox"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -11,16 +11,16 @@ import (
 
 type PublisherLogic struct {
 	serviceName     string
-	storeRepository entity2.Store
+	storeRepository entity.Store
 	prePublish      []outbox.Pre
-	syncGroup       *entity2.SyncGroup
+	syncGroup       *entity.SyncGroup
 }
 
-func NewPublisherLogic(storeRepository entity2.Store, serviceName string) *PublisherLogic {
+func NewPublisherLogic(storeRepository entity.Store, serviceName string) *PublisherLogic {
 	return &PublisherLogic{
 		storeRepository: storeRepository,
 		serviceName:     serviceName,
-		syncGroup:       entity2.NewSyncGroup(),
+		syncGroup:       entity.NewSyncGroup(),
 	}
 }
 
@@ -46,11 +46,11 @@ func (p *PublisherLogic) Publish(ctx context.Context, topic string, data interfa
 	for _, pre := range p.prePublish {
 		pre(ctx, &message)
 	}
-	record := entity2.Record{
+	record := entity.Record{
 		ServiceName: p.serviceName,
 		Uuid:        uuid.New(),
 		Message:     message,
-		State:       entity2.PendingDelivery,
+		State:       entity.PendingDelivery,
 		CreatedOn:   time.Now().UTC().Unix(),
 	}
 	return p.storeRepository.AddRecord(ctx, record)
