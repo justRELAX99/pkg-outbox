@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"github.com/enkodio/pkg-outbox/internal/pkg/config"
 	"github.com/enkodio/pkg-outbox/migration/app"
-	"github.com/enkodio/pkg-outbox/pkg/config"
 	log "github.com/sirupsen/logrus"
 	"os"
 )

@@ -2,10 +2,10 @@ package client
 
 import (
 	"github.com/enkodio/pkg-outbox/internal/logic"
+	"github.com/enkodio/pkg-outbox/internal/pkg/logger"
 	"github.com/enkodio/pkg-outbox/internal/repository"
 	"github.com/enkodio/pkg-outbox/migration/app"
 	"github.com/enkodio/pkg-outbox/outbox"
-	"github.com/enkodio/pkg-outbox/pkg/logger"
 	"github.com/sirupsen/logrus"
 )
 

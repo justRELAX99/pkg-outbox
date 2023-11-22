@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/enkodio/pkg-outbox/internal/app"
-	"github.com/enkodio/pkg-outbox/pkg/config"
+	"github.com/enkodio/pkg-outbox/internal/pkg/config"
 	log "github.com/sirupsen/logrus"
 	"os"
 )
