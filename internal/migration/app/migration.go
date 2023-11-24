@@ -6,7 +6,6 @@ import (
 	"flag"
 	"github.com/enkodio/pkg-outbox/internal/migration/migrations"
 	"github.com/enkodio/pkg-outbox/internal/pkg/environment"
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pkg/errors"
 )
 

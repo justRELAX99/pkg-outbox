@@ -10,7 +10,6 @@ require (
 	github.com/google/uuid v1.3.1
 	github.com/jackc/pgx/v5 v5.4.3
 	github.com/pkg/errors v0.9.1
-	github.com/pressly/goose/v3 v3.15.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/vm-affekt/logrustash v0.0.0-20200319075716-0e0c1586c1f2
 )
